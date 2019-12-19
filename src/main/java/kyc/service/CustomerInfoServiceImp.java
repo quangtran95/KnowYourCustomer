@@ -6,6 +6,8 @@ import kyc.dto.CustomerInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,19 +18,21 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
    @Qualifier("customerInfoJpaDao")
    CustomerInfoDao customerInfoDao;
 
-   public List<CustomerInfoDto> getListCustomerInfo() {
-      List<CustomerInfo> customerInfoList = customerInfoDao.getListCustomerInfo();
+   public List<CustomerInfoDto> getListCustomerInfo(String searchContent) {
+      List<CustomerInfo> customerInfoList = customerInfoDao.getListCustomerInfo(searchContent);
       List<CustomerInfoDto> customerInfoDtoList = mapper.mapCollection(customerInfoList, CustomerInfoDto.class);
       return customerInfoDtoList;
    }
 
    @Override
+   @Transactional(propagation = Propagation.REQUIRED)
    public void insertCustomerInfo(CustomerInfoDto customerInfoDto) {
       CustomerInfo customerInfo = mapper.map(customerInfoDto, CustomerInfo.class);
       customerInfoDao.insert(customerInfo);
    }
 
    @Override
+   @Transactional(propagation = Propagation.REQUIRED)
    public void updateCustomerInfo(CustomerInfoDto customerInfoDto) {
       CustomerInfo customerInfo = customerInfoDao.findById(customerInfoDto.getId());
       if(customerInfo != null) {
@@ -44,6 +48,7 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
    }
 
    @Override
+   @Transactional(propagation = Propagation.REQUIRED)
    public void deleteCustomerInfo(Long customerId) {
       CustomerInfo customerInfo = customerInfoDao.findById(customerId);
       if(customerInfo != null) {

@@ -17,10 +17,11 @@ public class CustomerInfoController {
    @Autowired
    CustomerInfoService customerInfoService;
 
-   @RequestMapping(value = "/customer/getListCustomerInfo", method = RequestMethod.GET)
-   public ResponseListDto<CustomerInfoDto> getListCustomerInfo(HttpServletResponse response) {
-      List<CustomerInfoDto> customerInfoDtoList = customerInfoService.getListCustomerInfo();
-      response.setContentType("application/json");
+   @RequestMapping(value = "/customer/searchCustomerInfo", method = RequestMethod.POST)
+   public @ResponseBody
+   ResponseListDto<CustomerInfoDto> getListCustomerInfo(@RequestBody String searchContent) {
+      System.out.print("/customer/getListCustomerInfo");
+      List<CustomerInfoDto> customerInfoDtoList = customerInfoService.getListCustomerInfo(searchContent);
       return new ResponseListDto<CustomerInfoDto>(customerInfoDtoList, KycCode.SUCCESS);
    }
 
@@ -30,19 +31,25 @@ public class CustomerInfoController {
    }
 
    @RequestMapping(value = "/customer/insertCustomerInfo", method = RequestMethod.POST)
-   public ResponseDto insertCustomerInfo(@RequestBody CustomerInfoDto customerInfoDto) {
+   public @ResponseBody
+   ResponseDto insertCustomerInfo(@RequestBody CustomerInfoDto customerInfoDto, HttpServletResponse response) {
+      System.out.print("/customer/insertCustomerInfo");
       customerInfoService.insertCustomerInfo(customerInfoDto);
       return new ResponseDto(KycCode.SUCCESS);
    }
 
    @RequestMapping(value = "/customer/updateCustomerInfo", method = RequestMethod.POST)
-   public ResponseDto updateCustomerInfo(@RequestBody CustomerInfoDto customerInfoDto) {
+   public @ResponseBody
+   ResponseDto updateCustomerInfo(@RequestBody CustomerInfoDto customerInfoDto) {
+      System.out.print("/customer/updateCustomerInfo");
       customerInfoService.updateCustomerInfo(customerInfoDto);
       return new ResponseDto(KycCode.SUCCESS);
    }
 
    @RequestMapping(value = "/customer/deleteCustomerInfo", method = RequestMethod.POST)
-   public ResponseDto deleteCustomerInfo(@RequestBody Long customerId) {
+   public @ResponseBody
+   ResponseDto deleteCustomerInfo(@RequestBody Long customerId) {
+      System.out.print("/customer/deleteCustomerInfo");
       customerInfoService.deleteCustomerInfo(customerId);
       return new ResponseDto(KycCode.SUCCESS);
    }

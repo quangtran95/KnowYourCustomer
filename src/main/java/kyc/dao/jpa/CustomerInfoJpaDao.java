@@ -15,32 +15,9 @@ public class CustomerInfoJpaDao extends GenericJpaDao<CustomerInfo, Long> implem
    }
 
    @Override
-   public void insert(CustomerInfo t) {
-//      t.setCreateTime(DateTimeUtils.getNowDate());
-      t.setUpdateTime(null);
-
-      super.insert(t);
-   }
-
-   @Override
-   public void update(CustomerInfo t) {
-      if (t.getCreateTime() == null) {
-         // preserve create time
-         CustomerInfo t0 = findById(t.getId());
-         if (t0.getCreateTime() == null) {
-//            t.setCreateTime(DateTimeUtils.getNowDate());
-         } else {
-            t.setCreateTime(t0.getCreateTime());
-         }
-      }
-      t.setUpdateTime(null);
-
-      super.update(t);
-   }
-
-   @Override
-   public List<CustomerInfo> getListCustomerInfo() {
-      return getEntityManager().createNativeQuery("SELECT * FROM CUSTOMER_INFO C", CustomerInfo.class)
+   public List<CustomerInfo> getListCustomerInfo(String searchContent) {
+      return getEntityManager().createNativeQuery("SELECT * FROM CUSTOMER_INFO C WHERE C.FIRST_NAME like :search OR C.LAST_NAME like :search OR C.EMAIL like :search OR C.ID_NUMBER like :search OR C.TELEPHONE_NUMBER like :search OR C.ADDRESS like :search GROUP BY C.ID", CustomerInfo.class)
+            .setParameter("search", "%" + searchContent + "%")
             .getResultList();
    }
 }

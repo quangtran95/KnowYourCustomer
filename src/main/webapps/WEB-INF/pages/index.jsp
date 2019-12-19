@@ -4,6 +4,7 @@
    <meta charset="UTF-8">
    <title>Know Your Customer</title>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
    <div>
@@ -13,7 +14,7 @@
                <label>First name: </label>
             </td>
             <td>
-               <input type="text" id="input_firstname">
+               <input type="text" id="input_firstname" class="form-control">
             </td>
          </tr>
          <tr>
@@ -21,7 +22,7 @@
                <label>Last name: </label>
             </td>
             <td>
-               <input type="text" id="input_lastname">
+               <input type="text" id="input_lastname" class="form-control">
             </td>
          </tr>
          <tr>
@@ -29,7 +30,7 @@
                <label>Email: </label>
             </td>
             <td>
-               <input type="text" id="input_email">
+               <input type="text" id="input_email" class="form-control">
             </td>
          </tr>
          <tr>
@@ -37,7 +38,7 @@
                <label>Telephone: </label>
             </td>
             <td>
-               <input type="text" id="input_telephone">
+               <input type="text" id="input_telephone" class="form-control">
             </td>
          </tr>
          <tr>
@@ -45,7 +46,7 @@
                <label>Id Number: </label>
             </td>
             <td>
-               <input type="text" id="input_idnumber">
+               <input type="text" id="input_idnumber" class="form-control">
             </td>
          </tr>
          <tr>
@@ -53,30 +54,70 @@
                <label>Address</label>: </label>
             </td>
             <td>
-               <input type="text" id="input_address">
+               <input type="text" id="input_address" class="form-control">
             </td>
          </tr>
       </table>
       <div id="button_group">
-         <button type="button" id="button_insert">Insert</button>
-         <button type="button" id="button_update">Update</button>
-         <button type="button" id="button_delete">Delete</button>
+         <button type="button" id="button_insert" class="btn btn-primary">Insert</button>
+         <button type="button" id="button_update" class="btn btn-primary">Update</button>
+         <button type="button" id="button_delete" class="btn btn-primary">Delete</button>
+         
+      </div>
+      <div>
+         <input id="kyc_search" type="text" placeholder="Search...">
+         <button type="button" id="button_search" class="btn btn-primary">Search</button>
       </div>
    </div>
-   <!--<div>-->
-      <!--<table>-->
-         <!--<tr>-->
-            <!--<th>Name</th>-->
-            <!--<th>Email</th>-->
-            <!--<th>Action</th>-->
-            <!--<th>Date</th>-->
-         <!--</tr>-->
-      <!--</table>-->
-   <!--</div>-->
+   <div>
+      <table id="kyc_customer_info_table" class="table">
+         <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+            <th>Date</th>
+         </tr>
+      </table>
+   </div>
 </body>
 </html>
 
 <script>
+   fillCustomerTable = function (listCustomerInfo) {
+      renderCustomerTable(listCustomerInfo);
+      bindEventCusomerTable();
+   };
+
+   renderCustomerTable = function (listCustomerInfo) {
+      var tableHtml = '';
+      tableHtml += '<tr>\n' +
+            '            <th>First Name</th>\n' +
+            '            <th>Last Name</th>\n' +
+            '            <th>Email</th>\n' +
+            '            <th>Id Number</th>\n' +
+            '            <th>Telephone</th>\n' +
+            '            <th>Address</th>\n' +
+            '         </tr>';
+
+      for(index in listCustomerInfo) {
+         var row =   '<tr>' +
+                        '<td>' + listCustomerInfo[index].firstName + '</td>' +
+                        '<td>' + listCustomerInfo[index].lastName + '</td>' +
+                        '<td>' + listCustomerInfo[index].email + '</td>' +
+                        '<td>' + listCustomerInfo[index].idNumber + '</td>' +
+                        '<td>' + listCustomerInfo[index].telephoneNumber + '</td>' +
+                        '<td>' + listCustomerInfo[index].address + '</td>' +
+                     '</tr>';
+         tableHtml += row;
+      }
+
+      $("#kyc_customer_info_table").html("");
+      $("#kyc_customer_info_table").html(tableHtml);
+   };
+
+   bindEventCusomerTable = function () {
+   };
+
    handleInsertCustomerInfoComplete = function () {
       clearInput();
    };
@@ -86,6 +127,20 @@
 
    handleUpdateCustomerInfoComplete = function () {
       clearInput();
+   };
+
+   handleGetListCustomerInfoComplete = function (params) {
+      if(params.code === 0) {
+         var listCustomerInfo = params.responseObject;
+         fillCustomerTable(listCustomerInfo);
+      }
+      else {
+         alert("Get List Customer Info fail");
+      }
+   };
+
+   handleGetListCustomerInfoFail = function (params) {
+      alert("Request fail");
    };
 
    clearInput = function () {
@@ -205,6 +260,11 @@
       $("#button_delete").click(function(){
          deleteCustomerInfo();
       });
+
+      $("#button_search").click(function(){
+         var searchContent = $("#kyc_search").val();
+         searchCustomerInfo(searchContent);
+      });
    };
    
    insertCustomerInfo = function () {
@@ -259,9 +319,12 @@
 
          $.ajax({
             type: "POST",
+            contentType: "application/json",
             url: "http://localhost:8080/KnowYourCustomer/customer/insertCustomerInfo",
-            data: data,
-            success: handleInsertCustomerInfoComplete(),
+            data: JSON.stringify(data),
+            success: function (data) {
+               handleInsertCustomerInfoComplete(data);
+            },
             error: clearInput(),
             dataType: "json"
          });
@@ -274,9 +337,12 @@
    deleteCustomerInfo = function (customerId) {
       $.ajax({
          type: "POST",
+         contentType: "application/json",
          url: "http://localhost:8080/KnowYourCustomer/customer/deleteCustomerInfo",
          data: customerId,
-         success: handleDeleteCustomerInfoComplete(),
+         success: function (data) {
+            handleDeleteCustomerInfoComplete(data);
+         },
          dataType: "json"
       });
    };
@@ -334,9 +400,12 @@
 
          $.ajax({
             type: "POST",
+            contentType: "application/json",
             url: "http://localhost:8080/KnowYourCustomer/customer/updateCustomerInfo",
-            data: data,
-            success: handleUpdateCustomerInfoComplete(),
+            data: JSON.stringify(data),
+            success: function (data) {
+               handleUpdateCustomerInfoComplete(data);
+            },
             error: clearInput(),
             dataType: "json"
          });
@@ -344,6 +413,22 @@
       else {
          alert(summitValidateMessage + ' is required');
       }
+   };
+
+   searchCustomerInfo = function (searchContent) {
+      $.ajax({
+         type: "POST",
+         contentType: "application/json",
+         url: "http://localhost:8080/KnowYourCustomer/customer/searchCustomerInfo",
+         data: JSON.stringify(searchContent),
+         success: function(params) {
+            handleGetListCustomerInfoComplete(params);
+         },
+         error: function () {
+            handleGetListCustomerInfoFail();
+         },
+         dataType: "json"
+      });
    };
 
    populateCustomerInfo = function (customer) {
@@ -376,14 +461,14 @@
       $.ajax({
          type: "GET",
          url: "http://localhost:8080/KnowYourCustomer/customer/getListCustomerInfo",
+         success: function(params) {
+            handleGetListCustomerInfoComplete(params);
+         },
          dataType: "json"
       });
    };
 </script>
 
 <script>
-
-   getListCustomerInfo();
-
    bindEvent();
 </script>
