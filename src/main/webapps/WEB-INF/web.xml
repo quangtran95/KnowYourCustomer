@@ -4,24 +4,4 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
           http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          id="WebApp_ID" version="3.0">
-
-   <display-name>KnowYourCustomer</display-name>
-
-   <welcome-file-list>
-      <welcome-file>index.html</welcome-file>
-   </welcome-file-list>
-
-   <listener>
-      <listener-class>
-         kyc.controller.CustomerInfoController
-      </listener-class>
-   </listener>
-
-   <listener>
-      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-   </listener>
-
-
-
-
 </web-app>

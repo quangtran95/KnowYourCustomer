@@ -1,9 +1,6 @@
 package kyc.controller;
 
-import kyc.dto.CustomerInfoDto;
-import kyc.dto.KycCode;
-import kyc.dto.ResponseDto;
-import kyc.dto.ResponseListDto;
+import kyc.dto.*;
 import kyc.service.CustomerInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +16,9 @@ public class CustomerInfoController {
 
    @RequestMapping(value = "/customer/searchCustomerInfo", method = RequestMethod.POST)
    public @ResponseBody
-   ResponseListDto<CustomerInfoDto> getListCustomerInfo(@RequestBody String searchContent) {
+   ResponseListDto<CustomerInfoDto> getListCustomerInfo(@RequestBody SearchCustomerInfoDto searchCustomerInfoDto) {
       System.out.print("/customer/getListCustomerInfo");
-      List<CustomerInfoDto> customerInfoDtoList = customerInfoService.getListCustomerInfo(searchContent);
+      List<CustomerInfoDto> customerInfoDtoList = customerInfoService.getListCustomerInfo(searchCustomerInfoDto);
       return new ResponseListDto<CustomerInfoDto>(customerInfoDtoList, KycCode.SUCCESS);
    }
 

@@ -64,6 +64,7 @@
          <button type="button" id="button_delete" class="btn btn-primary">Delete</button>
          
       </div>
+      </hr>
       <div>
          <input id="kyc_search" type="text" placeholder="Search...">
          <button type="button" id="button_search" class="btn btn-primary">Search</button>
@@ -171,12 +172,13 @@
    };
 
    validateEmailValue = function (value) {
-      if(value === '') {
-         return false;
-      }
-      else {
-         return true;
-      }
+      // if(value === '') {
+      //    return false;
+      // }
+      // else {
+      //    return true;
+      // }
+      return true;
    };
 
    validateIdNumberValue = function (value) {
@@ -198,12 +200,13 @@
    };
 
    validateAddressValue = function (value) {
-      if(value === '') {
-         return false;
-      }
-      else {
-         return true;
-      }
+      // if(value === '') {
+      //    return false;
+      // }
+      // else {
+      //    return true;
+      // }
+      return true;
    };
 
    bindEvent = function () {
@@ -416,11 +419,15 @@
    };
 
    searchCustomerInfo = function (searchContent) {
+      var data = {
+         searchContent: searchContent
+      }
+
       $.ajax({
          type: "POST",
          contentType: "application/json",
          url: "http://localhost:8080/KnowYourCustomer/customer/searchCustomerInfo",
-         data: JSON.stringify(searchContent),
+         data: JSON.stringify(data),
          success: function(params) {
             handleGetListCustomerInfoComplete(params);
          },

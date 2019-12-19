@@ -3,6 +3,7 @@ package kyc.service;
 import kyc.dao.CustomerInfoDao;
 import kyc.domain.CustomerInfo;
 import kyc.dto.CustomerInfoDto;
+import kyc.dto.SearchCustomerInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,8 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
    @Qualifier("customerInfoJpaDao")
    CustomerInfoDao customerInfoDao;
 
-   public List<CustomerInfoDto> getListCustomerInfo(String searchContent) {
-      List<CustomerInfo> customerInfoList = customerInfoDao.getListCustomerInfo(searchContent);
+   public List<CustomerInfoDto> getListCustomerInfo(SearchCustomerInfoDto searchCustomerInfoDto) {
+      List<CustomerInfo> customerInfoList = customerInfoDao.getListCustomerInfo(searchCustomerInfoDto);
       List<CustomerInfoDto> customerInfoDtoList = mapper.mapCollection(customerInfoList, CustomerInfoDto.class);
       return customerInfoDtoList;
    }
