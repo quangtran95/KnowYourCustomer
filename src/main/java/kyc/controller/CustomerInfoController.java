@@ -43,9 +43,9 @@ public class CustomerInfoController {
       return new ResponseDto(KycCode.SUCCESS);
    }
 
-   @RequestMapping(value = "/customer/deleteCustomerInfo", method = RequestMethod.POST)
+   @RequestMapping(value = "/customer/deleteCustomerInfo/{customerId}", method = RequestMethod.POST)
    public @ResponseBody
-   ResponseDto deleteCustomerInfo(@RequestBody Long customerId) {
+   ResponseDto deleteCustomerInfo(@PathVariable Long customerId) {
       System.out.print("/customer/deleteCustomerInfo");
       customerInfoService.deleteCustomerInfo(customerId);
       return new ResponseDto(KycCode.SUCCESS);
