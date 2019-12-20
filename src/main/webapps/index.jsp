@@ -6,7 +6,7 @@
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" >
-   <link rel="stylesheet" type="text/css" href="WEB-INF/pages/customer-info.css">.
+   <link rel="stylesheet" type="text/css" href="customer-info.css">.
 </head>
 <body>
    <div>
@@ -73,18 +73,21 @@
       </div>
    </div>
    <div>
-      <table id="kyc_customer_info_table_header" class="table table-striped">
+      <table id="kyc_customer_info_table_header">
          <tr>
-            <th style="width: 150px; cursor: pointer;" class="fa fa-sort-alpha-asc" id="kyc_first_name_header"> First Name</th>
-            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_last_name_header"> Last Name</th>
-            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_email_header"> Email</th>
-            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_id_number_header"> Id Number</th>
-            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_telephone_header"> Telephone</th>
-            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_address_header"> Address</th>
+            <th class="kyc-customer-info-header fa fa-sort-alpha-asc" id="kyc_first_name_header"> First Name</th>
+            <th class="kyc-customer-info-header fa " id="kyc_last_name_header"> Last Name</th>
+            <th class="kyc-customer-info-header fa " id="kyc_email_header"> Email</th>
+            <th class="kyc-customer-info-header fa " id="kyc_id_number_header"> Id Number</th>
+            <th class="kyc-customer-info-header fa " id="kyc_telephone_header"> Telephone</th>
+            <th class="kyc-customer-info-header fa " id="kyc_address_header"> Address</th>
          </tr>
       </table>
-      <table id="kyc_customer_info_table" class="table-striped">
+      <table id="kyc_customer_info_table" style="min-height: 130px;" class="table-striped">
       </table>
+      <div id="kyc_paging_group">
+
+      </div>
    </div>
 </body>
 </html>
@@ -98,6 +101,18 @@
    this.sortAsc = true;
    this.searchContent = '';
 
+   this.PAGE_ITEM_NUMBER = 5;
+   this.currentPage = 0;
+
+   this._LIST_CUSTOMER_INFO_LOAD = 0x1;
+   this._NUMBER_CUSTOMERINFO_LOAD = 0x2;
+
+   this._DATA_LOAD_COMPLETE = this._LIST_CUSTOMER_INFO_LOAD | this._NUMBER_CUSTOMERINFO_LOAD;
+   this.loadData = 0;
+
+   this.getListCustomerInfoReturnData;
+   this.countCustomerInfoReturnData;
+
    fillCustomerTable = function (listCustomerInfo) {
       this.listCustomerInfo = listCustomerInfo;
       renderCustomerTable(listCustomerInfo);
@@ -108,13 +123,13 @@
       var tableHtml = '';
 
       for(index in listCustomerInfo) {
-         var row =   '<tr cutomer-id=' + listCustomerInfo[index].id + '>' +
-                        '<td style="width: 150px; padding-left: 35px;">' + listCustomerInfo[index].firstName + '</td>' +
-                        '<td style="width: 150px; padding-left: 35px;">' + listCustomerInfo[index].lastName + '</td>' +
-                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].email + '</td>' +
-                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].idNumber + '</td>' +
-                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].telephoneNumber + '</td>' +
-                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].address + '</td>' +
+         var row =   '<tr cutomer-id="' + listCustomerInfo[index].id + '" style="vertical-align: top; height: 26px;">' +
+                        '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].firstName + '</td>' +
+                        '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].lastName + '</td>' +
+                        '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].email + '</td>' +
+                        '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].idNumber + '</td>' +
+                        '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].telephoneNumber + '</td>' +
+                        '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].address + '</td>' +
                      '</tr>';
          tableHtml += row;
       }
@@ -122,7 +137,6 @@
       $("#kyc_customer_info_table").html("");
       $("#kyc_customer_info_table").html(tableHtml);
    };
-
 
    bindEventCusomerTable = function () {
       $( "#kyc_customer_info_table tr").unbind( "click" );
@@ -150,7 +164,9 @@
             self.sortAsc = true;
          }
          updateSortUi("kyc_customer_info_table_header", "kyc_first_name_header", self.sortAsc);
-         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
       });
 
       $( "#kyc_last_name_header").unbind( "click" );
@@ -163,7 +179,9 @@
             self.sortAsc = true;
          }
          updateSortUi("kyc_customer_info_table_header", "kyc_last_name_header", self.sortAsc);
-         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
       });
 
       $( "#kyc_email_header").unbind( "click" );
@@ -176,7 +194,9 @@
             self.sortAsc = true;
          }
          updateSortUi("kyc_customer_info_table_header", "kyc_email_header", self.sortAsc);
-         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
       });
 
       $( "#kyc_id_number_header").unbind( "click" );
@@ -189,7 +209,9 @@
             self.sortAsc = true;
          }
          updateSortUi("kyc_customer_info_table_header", "kyc_id_number_header", self.sortAsc);
-         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
       });
 
       $( "#kyc_telephone_header").unbind( "click" );
@@ -202,7 +224,9 @@
             self.sortAsc = true;
          }
          updateSortUi("kyc_customer_info_table_header", "kyc_telephone_header", self.sortAsc);
-         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
       });
 
       $( "#kyc_address_header").unbind( "click" );
@@ -215,7 +239,9 @@
             self.sortAsc = true;
          }
          updateSortUi("kyc_customer_info_table_header", "kyc_address_header", self.sortAsc);
-         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
       });
    };
 
@@ -229,11 +255,13 @@
       }
    };
 
-   getListCustomerInfo = function (sortPattern, sortAsc, seachContent) {
+   getListCustomerInfo = function (sortPattern, sortAsc, seachContent, startIndex, limitNumber) {
       var data = {
          searchContent: searchContent,
          sortPattern: sortPattern,
-         sortAsc: sortAsc
+         sortAsc: sortAsc,
+         startIndex: startIndex,
+         limitNumber: limitNumber
       };
 
       $.ajax({
@@ -246,6 +274,28 @@
          },
          error: function () {
             handleGetListCustomerInfoFail();
+         },
+         dataType: "json"
+      });
+   };
+
+   getNumberCustomerInfo = function (sortPattern, sortAsc, seachContent) {
+      var data = {
+         searchContent: searchContent,
+         sortPattern: sortPattern,
+         sortAsc: sortAsc
+      };
+
+      $.ajax({
+         type: "POST",
+         contentType: "application/json",
+         url: "http://localhost:8080/KnowYourCustomer/customer/countCustomerInfo",
+         data: JSON.stringify(data),
+         success: function(params) {
+            handleCountCustomerInfoComplete(params);
+         },
+         error: function () {
+            handleCountCustomerInfoFail();
          },
          dataType: "json"
       });
@@ -272,15 +322,70 @@
 
    handleGetListCustomerInfoComplete = function (params) {
       if(params.code === 0) {
-         var listCustomerInfo = params.responseObject;
-         fillCustomerTable(listCustomerInfo);
+         this.getListCustomerInfoReturnData = params.responseObject;
+
+         this.loadData |= this._LIST_CUSTOMER_INFO_LOAD;
+         if(this.loadData === this._DATA_LOAD_COMPLETE) {
+            this.checkDataLoading();
+         }
       }
       else {
          alert("Get List Customer Info fail");
       }
    };
 
+   handleCountCustomerInfoComplete = function (params) {
+      if(params.code === 0) {
+         this.countCustomerInfoReturnData = params.responseObject;
+
+         this.loadData |= this._NUMBER_CUSTOMERINFO_LOAD;
+         if(this.loadData === this._DATA_LOAD_COMPLETE) {
+            this.checkDataLoading();
+         }
+      }
+      else {
+         alert("Count Customer Info fail");
+      }
+   };
+
+   checkDataLoading = function () {
+      this.loadData = 0;
+      var listCustomerInfo = this.getListCustomerInfoReturnData;
+      fillCustomerTable(listCustomerInfo);
+
+      var customerInfoNumber = this.countCustomerInfoReturnData;
+      generatePagingButton(customerInfoNumber);
+   };
+
+   generatePagingButton = function (customerInfoNumber) {
+      var numberPaging = Math.ceil(customerInfoNumber / this.PAGE_ITEM_NUMBER);
+
+      var pagingsHtml = '';
+      for(var i = 0; i < numberPaging; i++ ){
+         var pageButton = '<div style="border: 1px solid blue; width: 25px; text-align: center; cursor: pointer; display: inline-block; margin: 7px;" class="kyc-paging" paging-id = "' + i + '">' + (i+1) + '</div>';
+         pagingsHtml += pageButton;
+      }
+
+      $("#kyc_paging_group").html(pagingsHtml);
+      $(".kyc-paging").css("background-color", "unset");
+      $("#kyc_paging_group [paging-id='" + this.currentPage + "']").css("background-color", "#007bff3b");
+      bindEventPagings();
+   };
+
+   bindEventPagings = function() {
+      $(".kyc-paging").unbind("click");
+      $(".kyc-paging").bind("click", function () {
+         self.currentPage = parseInt($(this).attr("paging-id"));
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      });
+   };
+
    handleGetListCustomerInfoFail = function (params) {
+      alert("Request fail");
+   };
+   handleCountCustomerInfoFail = function (params) {
       alert("Request fail");
    };
 
@@ -413,7 +518,10 @@
       $("#button_search").click(function(){
          var searchContent = $("#kyc_search").val();
          self.searchContent = searchContent;
-         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         self.currentPage = 0;
+         var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+         getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
          self.selectedCustomer = null;
          clearInput();
       });

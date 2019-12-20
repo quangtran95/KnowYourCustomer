@@ -22,6 +22,14 @@ public class CustomerInfoController {
       return new ResponseListDto<CustomerInfoDto>(customerInfoDtoList, KycCode.SUCCESS);
    }
 
+   @RequestMapping(value = "/customer/countCustomerInfo", method = RequestMethod.POST)
+   public @ResponseBody
+   ResponseDto<Long> countCustomerInfo(@RequestBody SearchCustomerInfoDto searchCustomerInfoDto) {
+      System.out.print("/customer/countCustomerInfo");
+      Long customerInfoNumber = customerInfoService.countCustomerInfo(searchCustomerInfoDto);
+      return new ResponseDto<Long>(customerInfoNumber, KycCode.SUCCESS);
+   }
+
    @RequestMapping(value = "/index", method = RequestMethod.GET)
    public ResponseDto getIndex() {
       return new ResponseDto( KycCode.SUCCESS);

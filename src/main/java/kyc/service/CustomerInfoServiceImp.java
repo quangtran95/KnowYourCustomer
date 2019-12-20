@@ -26,6 +26,12 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
    }
 
    @Override
+   public Long countCustomerInfo(SearchCustomerInfoDto searchCustomerInfoDto) {
+      Long customerInfoNumber = customerInfoDao.countCustomerInfo(searchCustomerInfoDto);
+      return customerInfoNumber;
+   }
+
+   @Override
    @Transactional(propagation = Propagation.REQUIRED)
    public void insertCustomerInfo(CustomerInfoDto customerInfoDto) {
       CustomerInfo customerInfo = mapper.map(customerInfoDto, CustomerInfo.class);
