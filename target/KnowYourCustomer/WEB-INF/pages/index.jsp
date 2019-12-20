@@ -4,6 +4,8 @@
    <meta charset="UTF-8">
    <title>Know Your Customer</title>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+   <link rel="stylesheet" type="text/css" href="WEB-INF/pages/customer-info.css">.
 </head>
 <body>
    <div>
@@ -13,7 +15,7 @@
                <label>First name: </label>
             </td>
             <td>
-               <input type="text" id="input_firstname">
+               <input type="text" id="input_firstname" class="form-control">
             </td>
          </tr>
          <tr>
@@ -21,7 +23,7 @@
                <label>Last name: </label>
             </td>
             <td>
-               <input type="text" id="input_lastname">
+               <input type="text" id="input_lastname" class="form-control">
             </td>
          </tr>
          <tr>
@@ -29,7 +31,7 @@
                <label>Email: </label>
             </td>
             <td>
-               <input type="text" id="input_email">
+               <input type="text" id="input_email" class="form-control">
             </td>
          </tr>
          <tr>
@@ -37,7 +39,7 @@
                <label>Telephone: </label>
             </td>
             <td>
-               <input type="text" id="input_telephone">
+               <input type="text" id="input_telephone" class="form-control">
             </td>
          </tr>
          <tr>
@@ -45,7 +47,7 @@
                <label>Id Number: </label>
             </td>
             <td>
-               <input type="text" id="input_idnumber">
+               <input type="text" id="input_idnumber" class="form-control">
             </td>
          </tr>
          <tr>
@@ -53,39 +55,118 @@
                <label>Address</label>: </label>
             </td>
             <td>
-               <input type="text" id="input_address">
+               <input type="text" id="input_address" class="form-control">
             </td>
          </tr>
       </table>
       <div id="button_group">
-         <button type="button" id="button_insert">Insert</button>
-         <button type="button" id="button_update">Update</button>
-         <button type="button" id="button_delete">Delete</button>
+         <button type="button" id="button_insert" class="btn btn-primary">Insert</button>
+         <button type="button" id="button_update" class="btn btn-primary">Update</button>
+         <button type="button" id="button_delete" class="btn btn-primary">Delete</button>
+         
+      </div>
+      </hr>
+      <div>
+         <input id="kyc_search" type="text" placeholder="Search...">
+         <button type="button" id="button_search" class="btn btn-primary">Search</button>
       </div>
    </div>
-   <!--<div>-->
-      <!--<table>-->
-         <!--<tr>-->
-            <!--<th>Name</th>-->
-            <!--<th>Email</th>-->
-            <!--<th>Action</th>-->
-            <!--<th>Date</th>-->
-         <!--</tr>-->
-      <!--</table>-->
-   <!--</div>-->
+   <div>
+      <table id="kyc_customer_info_table" class="table table-striped">
+         <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+            <th>Date</th>
+         </tr>
+      </table>
+   </div>
 </body>
 </html>
 
 <script>
+   var self = this;
+   this.listCustomerInfo = [];
+   this.selectedCustomer;
+
+   fillCustomerTable = function (listCustomerInfo) {
+      this.listCustomerInfo = listCustomerInfo;
+      renderCustomerTable(listCustomerInfo);
+      bindEventCusomerTable();
+   };
+
+   renderCustomerTable = function (listCustomerInfo) {
+      var tableHtml = '';
+      tableHtml += '<tr>\n' +
+            '            <th>First Name</th>\n' +
+            '            <th>Last Name</th>\n' +
+            '            <th>Email</th>\n' +
+            '            <th>Id Number</th>\n' +
+            '            <th>Telephone</th>\n' +
+            '            <th>Address</th>\n' +
+            '         </tr>';
+
+      for(index in listCustomerInfo) {
+         var row =   '<tr cutomer-id=' + listCustomerInfo[index].id + '>' +
+                        '<td>' + listCustomerInfo[index].firstName + '</td>' +
+                        '<td>' + listCustomerInfo[index].lastName + '</td>' +
+                        '<td>' + listCustomerInfo[index].email + '</td>' +
+                        '<td>' + listCustomerInfo[index].idNumber + '</td>' +
+                        '<td>' + listCustomerInfo[index].telephoneNumber + '</td>' +
+                        '<td>' + listCustomerInfo[index].address + '</td>' +
+                     '</tr>';
+         tableHtml += row;
+      }
+
+      $("#kyc_customer_info_table").html("");
+      $("#kyc_customer_info_table").html(tableHtml);
+   };
+
+
+   bindEventCusomerTable = function () {
+      $("#kyc_customer_info_table tr").bind("click", function () {
+         // $("#kyc_customer_info_table").css('background-color', 'unset');
+         $(this).css('background-color', 'brown');
+         var customerId = parseInt($(this).attr('cutomer-id'));
+
+         for(index in self.listCustomerInfo) {
+            if(self.listCustomerInfo[index].id === customerId) {
+               fillCustomerInput(self.listCustomerInfo[index]);
+               self.selectedCustomer = self.listCustomerInfo[index];
+               break;
+            }
+         }
+      });
+   };
+
    handleInsertCustomerInfoComplete = function () {
       clearInput();
    };
 
    handleDeleteCustomerInfoComplete = function () {
+      clearInput();
+      alert("Delete customer complete");
+      self.selectedCustomer = null;
    };
 
    handleUpdateCustomerInfoComplete = function () {
       clearInput();
+      alert("Update customer complete");
+      self.selectedCustomer = null;
+   };
+
+   handleGetListCustomerInfoComplete = function (params) {
+      if(params.code === 0) {
+         var listCustomerInfo = params.responseObject;
+         fillCustomerTable(listCustomerInfo);
+      }
+      else {
+         alert("Get List Customer Info fail");
+      }
+   };
+
+   handleGetListCustomerInfoFail = function (params) {
+      alert("Request fail");
    };
 
    clearInput = function () {
@@ -116,12 +197,13 @@
    };
 
    validateEmailValue = function (value) {
-      if(value === '') {
-         return false;
-      }
-      else {
-         return true;
-      }
+      // if(value === '') {
+      //    return false;
+      // }
+      // else {
+      //    return true;
+      // }
+      return true;
    };
 
    validateIdNumberValue = function (value) {
@@ -143,12 +225,13 @@
    };
 
    validateAddressValue = function (value) {
-      if(value === '') {
-         return false;
-      }
-      else {
-         return true;
-      }
+      // if(value === '') {
+      //    return false;
+      // }
+      // else {
+      //    return true;
+      // }
+      return true;
    };
 
    bindEvent = function () {
@@ -205,6 +288,11 @@
       $("#button_delete").click(function(){
          deleteCustomerInfo();
       });
+
+      $("#button_search").click(function(){
+         var searchContent = $("#kyc_search").val();
+         searchCustomerInfo(searchContent);
+      });
    };
    
    insertCustomerInfo = function () {
@@ -259,9 +347,12 @@
 
          $.ajax({
             type: "POST",
+            contentType: "application/json",
             url: "http://localhost:8080/KnowYourCustomer/customer/insertCustomerInfo",
-            data: data,
-            success: handleInsertCustomerInfoComplete(),
+            data: JSON.stringify(data),
+            success: function (data) {
+               handleInsertCustomerInfoComplete(data);
+            },
             error: clearInput(),
             dataType: "json"
          });
@@ -271,79 +362,111 @@
       }
    };
 
-   deleteCustomerInfo = function (customerId) {
-      $.ajax({
-         type: "POST",
-         url: "http://localhost:8080/KnowYourCustomer/customer/deleteCustomerInfo",
-         data: customerId,
-         success: handleDeleteCustomerInfoComplete(),
-         dataType: "json"
-      });
-   };
-
-   updateCustomerInfo = function (customerId) {
-      var firstName = $("#input_firstname").val();
-      var lastName = $("#input_lastname").val();
-      var email = $("#input_email").val();
-      var idNumber = $("#input_idnumber").val();
-      var telephoneNumber = $("#input_telephone").val();
-      var address = $("#input_address").val();
-
-      var validateFirstName = validateFirstNameValue(firstName);
-      var validateLastName = validateLastNameValue(lastName);
-      var validateEmail = validateEmailValue(email);
-      var validateIdNumber = validateIdNumberValue(idNumber);
-      var validateTelePhoneNumber = validateTelephoneNumberValue(telephoneNumber);
-      var validateAddress = validateAddressValue(address);
-
-      var summitValidateMessage = '';
-      if(!validateFirstName) {
-         summitValidateMessage += 'First name, ';
-      }
-
-      if(!validateLastName) {
-         summitValidateMessage += 'Last name, ';
-      }
-
-      if(!validateEmail) {
-         summitValidateMessage += 'Email, ';
-      }
-
-      if(!validateIdNumber) {
-         summitValidateMessage += 'Id number, ';
-      }
-
-      if(!validateTelePhoneNumber) {
-         summitValidateMessage += 'Telephone number, ';
-      }
-
-      if(!validateAddress) {
-         summitValidateMessage += 'Address, ';
-      }
-
-      if(validateFirstName && validateLastName && validateEmail && validateIdNumber && validateTelePhoneNumber && validateAddress) {
-         var data = {
-            id: customerId,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            idNumber: idNumber,
-            telephoneNumber: telephoneNumber,
-            address: address
-         };
-
+   deleteCustomerInfo = function () {
+      if(self.selectedCustomer) {
          $.ajax({
             type: "POST",
-            url: "http://localhost:8080/KnowYourCustomer/customer/updateCustomerInfo",
-            data: data,
-            success: handleUpdateCustomerInfoComplete(),
-            error: clearInput(),
+            url: "http://localhost:8080/KnowYourCustomer/customer/deleteCustomerInfo/" + self.selectedCustomer.id,
+            success: function (data) {
+               handleDeleteCustomerInfoComplete(data);
+            },
             dataType: "json"
          });
       }
       else {
-         alert(summitValidateMessage + ' is required');
+         alert("Please select a customer first");
       }
+   };
+
+   updateCustomerInfo = function () {
+      if(self.selectedCustomer) {
+         var firstName = $("#input_firstname").val();
+         var lastName = $("#input_lastname").val();
+         var email = $("#input_email").val();
+         var idNumber = $("#input_idnumber").val();
+         var telephoneNumber = $("#input_telephone").val();
+         var address = $("#input_address").val();
+
+         var validateFirstName = validateFirstNameValue(firstName);
+         var validateLastName = validateLastNameValue(lastName);
+         var validateEmail = validateEmailValue(email);
+         var validateIdNumber = validateIdNumberValue(idNumber);
+         var validateTelePhoneNumber = validateTelephoneNumberValue(telephoneNumber);
+         var validateAddress = validateAddressValue(address);
+
+         var summitValidateMessage = '';
+         if (!validateFirstName) {
+            summitValidateMessage += 'First name, ';
+         }
+
+         if (!validateLastName) {
+            summitValidateMessage += 'Last name, ';
+         }
+
+         if (!validateEmail) {
+            summitValidateMessage += 'Email, ';
+         }
+
+         if (!validateIdNumber) {
+            summitValidateMessage += 'Id number, ';
+         }
+
+         if (!validateTelePhoneNumber) {
+            summitValidateMessage += 'Telephone number, ';
+         }
+
+         if (!validateAddress) {
+            summitValidateMessage += 'Address, ';
+         }
+
+         if (validateFirstName && validateLastName && validateEmail && validateIdNumber && validateTelePhoneNumber && validateAddress) {
+            var data = Object.assign({}, self.selectedCustomer);
+            data.firstName = firstName;
+            data.lastName = lastName;
+            data.email = email;
+            data.idNumber = idNumber;
+            data.telephoneNumber = telephoneNumber;
+            data.address = address;
+
+            $.ajax({
+               type: "POST",
+               contentType: "application/json",
+               url: "http://localhost:8080/KnowYourCustomer/customer/updateCustomerInfo",
+               data: JSON.stringify(data),
+               success: function (data) {
+                  handleUpdateCustomerInfoComplete(data);
+               },
+               error: clearInput(),
+               dataType: "json"
+            });
+         }
+         else {
+            alert(summitValidateMessage + ' is required');
+         }
+      }
+      else {
+         alert("Please select a customer first");
+      }
+   };
+
+   searchCustomerInfo = function (searchContent) {
+      var data = {
+         searchContent: searchContent
+      }
+
+      $.ajax({
+         type: "POST",
+         contentType: "application/json",
+         url: "http://localhost:8080/KnowYourCustomer/customer/searchCustomerInfo",
+         data: JSON.stringify(data),
+         success: function(params) {
+            handleGetListCustomerInfoComplete(params);
+         },
+         error: function () {
+            handleGetListCustomerInfoFail();
+         },
+         dataType: "json"
+      });
    };
 
    populateCustomerInfo = function (customer) {
@@ -376,14 +499,25 @@
       $.ajax({
          type: "GET",
          url: "http://localhost:8080/KnowYourCustomer/customer/getListCustomerInfo",
+         success: function(params) {
+            handleGetListCustomerInfoComplete(params);
+         },
          dataType: "json"
       });
+   };
+
+   fillCustomerInput = function (customer) {
+      if(customer) {
+         $("#input_firstname").val(customer.firstName);
+         $("#input_lastname").val(customer.lastName);
+         $("#input_email").val(customer.email);
+         $("#input_telephone").val(customer.telephoneNumber);
+         $("#input_idnumber").val(customer.idNumber);
+         $("#input_address").val(customer.address);
+      }
    };
 </script>
 
 <script>
-
-   getListCustomerInfo();
-
    bindEvent();
 </script>
