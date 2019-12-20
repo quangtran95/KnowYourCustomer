@@ -5,11 +5,12 @@
    <title>Know Your Customer</title>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" >
    <link rel="stylesheet" type="text/css" href="WEB-INF/pages/customer-info.css">.
 </head>
 <body>
    <div>
-      <table>
+      <table style="margin: auto;">
          <tr>
             <td>
                <label>First name: </label>
@@ -59,7 +60,7 @@
             </td>
          </tr>
       </table>
-      <div id="button_group">
+      <div id="button_group" style="text-align: center;">
          <button type="button" id="button_insert" class="btn btn-primary">Insert</button>
          <button type="button" id="button_update" class="btn btn-primary">Update</button>
          <button type="button" id="button_delete" class="btn btn-primary">Delete</button>
@@ -72,13 +73,17 @@
       </div>
    </div>
    <div>
-      <table id="kyc_customer_info_table" class="table table-striped">
+      <table id="kyc_customer_info_table_header" class="table table-striped">
          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Action</th>
-            <th>Date</th>
+            <th style="width: 150px; cursor: pointer;" class="fa fa-sort-alpha-asc" id="kyc_first_name_header"> First Name</th>
+            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_last_name_header"> Last Name</th>
+            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_email_header"> Email</th>
+            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_id_number_header"> Id Number</th>
+            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_telephone_header"> Telephone</th>
+            <th style="width: 150px; cursor: pointer;" class="fa " id="kyc_address_header"> Address</th>
          </tr>
+      </table>
+      <table id="kyc_customer_info_table" class="table-striped">
       </table>
    </div>
 </body>
@@ -89,6 +94,10 @@
    this.listCustomerInfo = [];
    this.selectedCustomer;
 
+   this.sortPattern = "FirstName";
+   this.sortAsc = true;
+   this.searchContent = '';
+
    fillCustomerTable = function (listCustomerInfo) {
       this.listCustomerInfo = listCustomerInfo;
       renderCustomerTable(listCustomerInfo);
@@ -97,23 +106,15 @@
 
    renderCustomerTable = function (listCustomerInfo) {
       var tableHtml = '';
-      tableHtml += '<tr>\n' +
-            '            <th>First Name</th>\n' +
-            '            <th>Last Name</th>\n' +
-            '            <th>Email</th>\n' +
-            '            <th>Id Number</th>\n' +
-            '            <th>Telephone</th>\n' +
-            '            <th>Address</th>\n' +
-            '         </tr>';
 
       for(index in listCustomerInfo) {
          var row =   '<tr cutomer-id=' + listCustomerInfo[index].id + '>' +
-                        '<td>' + listCustomerInfo[index].firstName + '</td>' +
-                        '<td>' + listCustomerInfo[index].lastName + '</td>' +
-                        '<td>' + listCustomerInfo[index].email + '</td>' +
-                        '<td>' + listCustomerInfo[index].idNumber + '</td>' +
-                        '<td>' + listCustomerInfo[index].telephoneNumber + '</td>' +
-                        '<td>' + listCustomerInfo[index].address + '</td>' +
+                        '<td style="width: 150px; padding-left: 35px;">' + listCustomerInfo[index].firstName + '</td>' +
+                        '<td style="width: 150px; padding-left: 35px;">' + listCustomerInfo[index].lastName + '</td>' +
+                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].email + '</td>' +
+                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].idNumber + '</td>' +
+                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].telephoneNumber + '</td>' +
+                        '<td style="width: 150px; padding-left: 35px;"">' + listCustomerInfo[index].address + '</td>' +
                      '</tr>';
          tableHtml += row;
       }
@@ -124,9 +125,10 @@
 
 
    bindEventCusomerTable = function () {
+      $( "#kyc_customer_info_table tr").unbind( "click" );
       $("#kyc_customer_info_table tr").bind("click", function () {
-         // $("#kyc_customer_info_table").css('background-color', 'unset');
-         $(this).css('background-color', 'brown');
+         $("#kyc_customer_info_table tr").css('background-color', 'unset');
+         $(this).css('background-color', '#8080803d');
          var customerId = parseInt($(this).attr('cutomer-id'));
 
          for(index in self.listCustomerInfo) {
@@ -137,20 +139,133 @@
             }
          }
       });
+
+      $( "#kyc_first_name_header").unbind( "click" );
+      $("#kyc_first_name_header").bind("click", function () {
+         if(self.sortPattern === "FirstName"){
+            self.sortAsc = !self.sortAsc;
+         }
+         else {
+            self.sortPattern = "FirstName";
+            self.sortAsc = true;
+         }
+         updateSortUi("kyc_customer_info_table_header", "kyc_first_name_header", self.sortAsc);
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      });
+
+      $( "#kyc_last_name_header").unbind( "click" );
+      $("#kyc_last_name_header").bind("click", function () {
+         if(self.sortPattern === "LastName"){
+            self.sortAsc = !self.sortAsc;
+         }
+         else {
+            self.sortPattern = "LastName";
+            self.sortAsc = true;
+         }
+         updateSortUi("kyc_customer_info_table_header", "kyc_last_name_header", self.sortAsc);
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      });
+
+      $( "#kyc_email_header").unbind( "click" );
+      $("#kyc_email_header").bind("click", function () {
+         if(self.sortPattern === "Email"){
+            self.sortAsc = !self.sortAsc;
+         }
+         else {
+            self.sortPattern = "Email";
+            self.sortAsc = true;
+         }
+         updateSortUi("kyc_customer_info_table_header", "kyc_email_header", self.sortAsc);
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      });
+
+      $( "#kyc_id_number_header").unbind( "click" );
+      $("#kyc_id_number_header").bind("click", function () {
+         if(self.sortPattern === "IdNumber"){
+            self.sortAsc = !self.sortAsc;
+         }
+         else {
+            self.sortPattern = "IdNumber";
+            self.sortAsc = true;
+         }
+         updateSortUi("kyc_customer_info_table_header", "kyc_id_number_header", self.sortAsc);
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      });
+
+      $( "#kyc_telephone_header").unbind( "click" );
+      $("#kyc_telephone_header").bind("click", function () {
+         if(self.sortPattern === "Telephone"){
+            self.sortAsc = !self.sortAsc;
+         }
+         else {
+            self.sortPattern = "Telephone";
+            self.sortAsc = true;
+         }
+         updateSortUi("kyc_customer_info_table_header", "kyc_telephone_header", self.sortAsc);
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      });
+
+      $( "#kyc_address_header").unbind( "click" );
+      $("#kyc_address_header").bind("click", function () {
+         if(self.sortPattern === "Address"){
+            self.sortAsc = !self.sortAsc;
+         }
+         else {
+            self.sortPattern = "Address";
+            self.sortAsc = true;
+         }
+         updateSortUi("kyc_customer_info_table_header", "kyc_address_header", self.sortAsc);
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      });
+   };
+
+   updateSortUi = function (tableId, headerId, sortAsc) {
+      $("#" + tableId + " tr th").removeClass("fa-sort-alpha-asc fa-sort-alpha-desc");
+      if(sortAsc === true) {
+         $("#" + headerId).addClass("fa-sort-alpha-asc");
+      }
+      else {
+         $("#" + headerId).addClass("fa-sort-alpha-desc");
+      }
+   };
+
+   getListCustomerInfo = function (sortPattern, sortAsc, seachContent) {
+      var data = {
+         searchContent: searchContent,
+         sortPattern: sortPattern,
+         sortAsc: sortAsc
+      };
+
+      $.ajax({
+         type: "POST",
+         contentType: "application/json",
+         url: "http://localhost:8080/KnowYourCustomer/customer/searchCustomerInfo",
+         data: JSON.stringify(data),
+         success: function(params) {
+            handleGetListCustomerInfoComplete(params);
+         },
+         error: function () {
+            handleGetListCustomerInfoFail();
+         },
+         dataType: "json"
+      });
    };
 
    handleInsertCustomerInfoComplete = function () {
       clearInput();
+      alert("Insert customer complete");
    };
 
    handleDeleteCustomerInfoComplete = function () {
       clearInput();
+      $("#kyc_customer_info_table tr").css('background-color', 'unset');
       alert("Delete customer complete");
       self.selectedCustomer = null;
    };
 
    handleUpdateCustomerInfoComplete = function () {
       clearInput();
+      $("#kyc_customer_info_table tr").css('background-color', 'unset');
       alert("Update customer complete");
       self.selectedCustomer = null;
    };
@@ -235,6 +350,7 @@
    };
 
    bindEvent = function () {
+      $( "#input_firstname" ).unbind( "blur" );
       $("#input_firstname").bind("blur", function () {
          var valid = validateFirstNameValue($("#input_firstname").val());
          if(!valid) {
@@ -242,6 +358,7 @@
          }
       });
 
+      $( "#input_lastname" ).unbind( "blur" );
       $("#input_lastname").bind("blur", function () {
          var valid = validateLastNameValue($("#input_lastname").val());
          if(!valid) {
@@ -249,6 +366,7 @@
          }
       });
 
+      $( "#input_email" ).unbind( "blur" );
       $("#input_email").bind("blur", function () {
          var valid = validateEmailValue($("#input_email").val());
          if(!valid) {
@@ -256,6 +374,7 @@
          }
       });
 
+      $( "#input_idnumber" ).unbind( "blur" );
       $("#input_idnumber").bind("blur", function () {
          var valid = validateIdNumberValue($("#input_idnumber").val());
          if(!valid) {
@@ -263,6 +382,7 @@
          }
       });
 
+      $( "#input_telephone" ).unbind( "blur" );
       $("#input_telephone").bind("blur", function () {
          var valid = validateTelephoneNumberValue($("#input_telephone").val());
          if(!valid) {
@@ -270,6 +390,7 @@
          }
       });
 
+      $( "#input_address" ).unbind( "blur" );
       $("#input_address").bind("blur", function () {
          var valid = validateAddressValue($("#input_address").val());
          if(!valid) {
@@ -291,7 +412,10 @@
 
       $("#button_search").click(function(){
          var searchContent = $("#kyc_search").val();
-         searchCustomerInfo(searchContent);
+         self.searchContent = searchContent;
+         getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+         self.selectedCustomer = null;
+         clearInput();
       });
    };
    
@@ -452,7 +576,7 @@
    searchCustomerInfo = function (searchContent) {
       var data = {
          searchContent: searchContent
-      }
+      };
 
       $.ajax({
          type: "POST",
@@ -493,17 +617,6 @@
       if(customer.address) {
          $("#input_address").val(customer.address);
       }
-   };
-
-   getListCustomerInfo = function () {
-      $.ajax({
-         type: "GET",
-         url: "http://localhost:8080/KnowYourCustomer/customer/getListCustomerInfo",
-         success: function(params) {
-            handleGetListCustomerInfoComplete(params);
-         },
-         dataType: "json"
-      });
    };
 
    fillCustomerInput = function (customer) {

@@ -1,6 +1,7 @@
 package kyc.dao.jpa;
 
 import kyc.dao.GenericDao;
+import kyc.utils.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,14 +58,14 @@ public abstract class GenericJpaDao<T, ID extends Serializable> implements Gener
          cArg[0] = Date.class;
          Method funcUpdateTime = persistentClass.getMethod("setUpdateTime",cArg);
          Method funcCreateTime = persistentClass.getMethod("setCreateTime",cArg);
-//         funcCreateTime.invoke(t , DateTimeUtils.getNowDate());
+         funcCreateTime.invoke(t , DateTimeUtils.getNowDate());
          funcUpdateTime.invoke(t,new Object[]{null});
       }
       catch (Exception ex){
          StringWriter sw = new StringWriter();
          ex.printStackTrace(new PrintWriter(sw));
-         logger.debug("[GenericJpaDao][Insert] Can not invoke method setUpdateTime or setCreateTime of class : "
-               + t.getClass().getName() + ", error :" + sw.toString());
+//         logger.debug("[GenericJpaDao][Insert] Can not invoke method setUpdateTime or setCreateTime of class : "
+//               + t.getClass().getName() + ", error :" + sw.toString());
       }
       entityManager.persist(t);
 
@@ -84,7 +85,7 @@ public abstract class GenericJpaDao<T, ID extends Serializable> implements Gener
             Object id = funcGetId.invoke(t);
             T tInDB = findById((ID) id);
             if (funcGetCreateTime.invoke(tInDB) == null) {
-//               funcSetCreateTime.invoke(t, DateTimeUtils.getNowDate());
+               funcSetCreateTime.invoke(t, DateTimeUtils.getNowDate());
             } else {
                funcSetCreateTime.invoke(t, funcGetCreateTime.invoke(tInDB));
             }
@@ -94,8 +95,8 @@ public abstract class GenericJpaDao<T, ID extends Serializable> implements Gener
       catch (Exception ex){
          StringWriter sw = new StringWriter();
          ex.printStackTrace(new PrintWriter(sw));
-         logger.debug("[GenericJpaDao][Update] Can not invoke method setUpdateTime or setCreateTime of class : "
-               + t.getClass().getName() + ", error :" + sw.toString());
+//         logger.debug("[GenericJpaDao][Update] Can not invoke method setUpdateTime or setCreateTime of class : "
+//               + t.getClass().getName() + ", error :" + sw.toString());
       }
       entityManager.merge(t);
 
