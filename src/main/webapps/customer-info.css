@@ -9,3 +9,11 @@ table#kyc_customer_info_table tr td {
    font-weight: bold;
    text-align: center;
 }
+
+table#kyc_customer_info_table tr:hover {
+   background-color: lightgray;
+}
+
+table#kyc_customer_info_table_header th:hover {
+   background-color: lightgray;
+}

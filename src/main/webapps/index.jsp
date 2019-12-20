@@ -16,7 +16,7 @@
                <label>First name: </label>
             </td>
             <td>
-               <input type="text" id="input_firstname" class="form-control">
+               <input type="text" id="input_firstname" class="form-control" maxlength="100">
             </td>
          </tr>
          <tr>
@@ -24,7 +24,7 @@
                <label>Last name: </label>
             </td>
             <td>
-               <input type="text" id="input_lastname" class="form-control">
+               <input type="text" id="input_lastname" class="form-control" maxlength="100">
             </td>
          </tr>
          <tr>
@@ -32,7 +32,7 @@
                <label>Email: </label>
             </td>
             <td>
-               <input type="text" id="input_email" class="form-control">
+               <input type="text" id="input_email" class="form-control" maxlength="100">
             </td>
          </tr>
          <tr>
@@ -40,7 +40,7 @@
                <label>Telephone: </label>
             </td>
             <td>
-               <input type="text" id="input_telephone" class="form-control">
+               <input type="number" min="0" id="input_telephone" class="form-control" maxlength="100">
             </td>
          </tr>
          <tr>
@@ -48,7 +48,7 @@
                <label>Id Number: </label>
             </td>
             <td>
-               <input type="text" id="input_idnumber" class="form-control">
+               <input type="number" min="0" id="input_idnumber" class="form-control" maxlength="100">
             </td>
          </tr>
          <tr>
@@ -56,7 +56,7 @@
                <label>Address</label>: </label>
             </td>
             <td>
-               <input type="text" id="input_address" class="form-control">
+               <input type="text" id="input_address" class="form-control" maxlength="100">
             </td>
          </tr>
       </table>
@@ -72,7 +72,7 @@
          <button type="button" id="button_search" class="btn btn-primary">Search</button>
       </div>
    </div>
-   <div>
+   <div style="min-height: 160px;">
       <table id="kyc_customer_info_table_header">
          <tr>
             <th class="kyc-customer-info-header fa fa-sort-alpha-asc" id="kyc_first_name_header"> First Name</th>
@@ -83,11 +83,11 @@
             <th class="kyc-customer-info-header fa " id="kyc_address_header"> Address</th>
          </tr>
       </table>
-      <table id="kyc_customer_info_table" style="min-height: 130px;" class="table-striped">
+      <table id="kyc_customer_info_table" style="max-height: 130px;" class="table-striped">
       </table>
-      <div id="kyc_paging_group">
+   </div>
+   <div id="kyc_paging_group">
 
-      </div>
    </div>
 </body>
 </html>
