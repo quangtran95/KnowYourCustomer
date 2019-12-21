@@ -26,6 +26,79 @@ clearInput = function () {
    $("#input_address").val('');
 };
 
+bindEvent = function () {
+   $( "#input_firstname" ).unbind( "blur" );
+   $("#input_firstname").bind("blur", function () {
+      var valid = validateFirstNameValue($("#input_firstname").val());
+      if(!valid) {
+         alert('First name is required');
+      }
+   });
+
+   $( "#input_lastname" ).unbind( "blur" );
+   $("#input_lastname").bind("blur", function () {
+      var valid = validateLastNameValue($("#input_lastname").val());
+      if(!valid) {
+         alert('Last name is required');
+      }
+   });
+
+   $( "#input_email" ).unbind( "blur" );
+   $("#input_email").bind("blur", function () {
+      var valid = validateEmailValue($("#input_email").val());
+      if(!valid) {
+         alert('Email is required');
+      }
+   });
+
+   $( "#input_idnumber" ).unbind( "blur" );
+   $("#input_idnumber").bind("blur", function () {
+      var valid = validateIdNumberValue($("#input_idnumber").val());
+      if(!valid) {
+         alert('Id number is required');
+      }
+   });
+
+   $( "#input_telephone" ).unbind( "blur" );
+   $("#input_telephone").bind("blur", function () {
+      var valid = validateTelephoneNumberValue($("#input_telephone").val());
+      if(!valid) {
+         alert('Telephone number is required');
+      }
+   });
+
+   $( "#input_address" ).unbind( "blur" );
+   $("#input_address").bind("blur", function () {
+      var valid = validateAddressValue($("#input_address").val());
+      if(!valid) {
+         alert('Address is required');
+      }
+   });
+
+   $("#button_insert").click(function(){
+      insertCustomerInfo();
+   });
+
+   $("#button_update").click(function(){
+      updateCustomerInfo();
+   });
+
+   $("#button_delete").click(function(){
+      deleteCustomerInfo();
+   });
+
+   $("#button_search").click(function(){
+      var searchContent = $("#kyc_search").val();
+      self.searchContent = searchContent;
+      self.currentPage = 0;
+      var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+      getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+      getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+      self.selectedCustomer = null;
+      clearInput();
+   });
+};
+
 insertCustomerInfo = function () {
    var firstName = $("#input_firstname").val();
    var lastName = $("#input_lastname").val();

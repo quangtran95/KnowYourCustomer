@@ -19,6 +19,99 @@ this.loadData = 0;
 this.getListCustomerInfoReturnData;
 this.countCustomerInfoReturnData;
 
+//Load data
+getListCustomerInfo = function (sortPattern, sortAsc, searchContent, startIndex, limitNumber) {
+   var data = {
+      searchContent: searchContent,
+      sortPattern: sortPattern,
+      sortAsc: sortAsc,
+      startIndex: startIndex,
+      limitNumber: limitNumber
+   };
+
+   $.ajax({
+      type: "POST",
+      contentType: "application/json",
+      url: "http://localhost:8080/KnowYourCustomer/customer/searchCustomerInfo",
+      data: JSON.stringify(data),
+      success: function(params) {
+         handleGetListCustomerInfoComplete(params);
+      },
+      error: function () {
+         handleGetListCustomerInfoFail();
+      },
+      dataType: "json"
+   });
+};
+
+getNumberCustomerInfo = function (sortPattern, sortAsc, searchContent) {
+   var data = {
+      searchContent: searchContent,
+      sortPattern: sortPattern,
+      sortAsc: sortAsc
+   };
+
+   $.ajax({
+      type: "POST",
+      contentType: "application/json",
+      url: "http://localhost:8080/KnowYourCustomer/customer/countCustomerInfo",
+      data: JSON.stringify(data),
+      success: function(params) {
+         handleCountCustomerInfoComplete(params);
+      },
+      error: function () {
+         handleCountCustomerInfoFail();
+      },
+      dataType: "json"
+   });
+};
+
+checkDataLoading = function () {
+   this.loadData = 0;
+   var listCustomerInfo = this.getListCustomerInfoReturnData;
+   fillCustomerTable(listCustomerInfo);
+
+   var customerInfoNumber = this.countCustomerInfoReturnData;
+   generatePagingButton(customerInfoNumber);
+};
+
+handleGetListCustomerInfoComplete = function (params) {
+   if(params.code === 0) {
+      this.getListCustomerInfoReturnData = params.responseObject;
+
+      this.loadData |= this._LIST_CUSTOMER_INFO_LOAD;
+      if(this.loadData === this._DATA_LOAD_COMPLETE) {
+         this.checkDataLoading();
+      }
+   }
+   else {
+      alert("Get List Customer Info fail");
+   }
+};
+
+handleCountCustomerInfoComplete = function (params) {
+   if(params.code === 0) {
+      this.countCustomerInfoReturnData = params.responseObject;
+
+      this.loadData |= this._NUMBER_CUSTOMERINFO_LOAD;
+      if(this.loadData === this._DATA_LOAD_COMPLETE) {
+         this.checkDataLoading();
+      }
+   }
+   else {
+      alert("Count Customer Info fail");
+   }
+};
+
+handleGetListCustomerInfoFail = function (params) {
+   alert("Request fail");
+};
+
+handleCountCustomerInfoFail = function (params) {
+   alert("Request fail");
+};
+
+//Render UI
 fillCustomerTable = function (listCustomerInfo) {
    this.listCustomerInfo = listCustomerInfo;
    renderCustomerTable(listCustomerInfo);
@@ -161,97 +254,7 @@ updateSortUi = function (tableId, headerId, sortAsc) {
    }
 };
 
-getListCustomerInfo = function (sortPattern, sortAsc, seachContent, startIndex, limitNumber) {
-   var data = {
-      searchContent: searchContent,
-      sortPattern: sortPattern,
-      sortAsc: sortAsc,
-      startIndex: startIndex,
-      limitNumber: limitNumber
-   };
-
-   $.ajax({
-      type: "POST",
-      contentType: "application/json",
-      url: "http://localhost:8080/KnowYourCustomer/customer/searchCustomerInfo",
-      data: JSON.stringify(data),
-      success: function(params) {
-         handleGetListCustomerInfoComplete(params);
-      },
-      error: function () {
-         handleGetListCustomerInfoFail();
-      },
-      dataType: "json"
-   });
-};
-
-getNumberCustomerInfo = function (sortPattern, sortAsc, seachContent) {
-   var data = {
-      searchContent: searchContent,
-      sortPattern: sortPattern,
-      sortAsc: sortAsc
-   };
-
-   $.ajax({
-      type: "POST",
-      contentType: "application/json",
-      url: "http://localhost:8080/KnowYourCustomer/customer/countCustomerInfo",
-      data: JSON.stringify(data),
-      success: function(params) {
-         handleCountCustomerInfoComplete(params);
-      },
-      error: function () {
-         handleCountCustomerInfoFail();
-      },
-      dataType: "json"
-   });
-};
-
-checkDataLoading = function () {
-   this.loadData = 0;
-   var listCustomerInfo = this.getListCustomerInfoReturnData;
-   fillCustomerTable(listCustomerInfo);
-
-   var customerInfoNumber = this.countCustomerInfoReturnData;
-   generatePagingButton(customerInfoNumber);
-};
-
-handleGetListCustomerInfoComplete = function (params) {
-   if(params.code === 0) {
-      this.getListCustomerInfoReturnData = params.responseObject;
-
-      this.loadData |= this._LIST_CUSTOMER_INFO_LOAD;
-      if(this.loadData === this._DATA_LOAD_COMPLETE) {
-         this.checkDataLoading();
-      }
-   }
-   else {
-      alert("Get List Customer Info fail");
-   }
-};
-
-handleCountCustomerInfoComplete = function (params) {
-   if(params.code === 0) {
-      this.countCustomerInfoReturnData = params.responseObject;
-
-      this.loadData |= this._NUMBER_CUSTOMERINFO_LOAD;
-      if(this.loadData === this._DATA_LOAD_COMPLETE) {
-         this.checkDataLoading();
-      }
-   }
-   else {
-      alert("Count Customer Info fail");
-   }
-};
-
-handleGetListCustomerInfoFail = function (params) {
-   alert("Request fail");
-};
-handleCountCustomerInfoFail = function (params) {
-   alert("Request fail");
-};
-
-
+//Render Paging
 generatePagingButton = function (customerInfoNumber) {
    var numberPaging = Math.ceil(customerInfoNumber / this.PAGE_ITEM_NUMBER);
 
@@ -277,6 +280,7 @@ bindEventPagings = function() {
    });
 };
 
+//Other function
 fillCustomerInput = function (customer) {
    if(customer) {
       $("#input_firstname").val(customer.firstName);

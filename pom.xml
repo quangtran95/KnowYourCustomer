@@ -200,7 +200,7 @@
 
          <configuration>
             <httpConnector>
-               <port>8443</port>
+               <port>8080</port>
             </httpConnector>
             <scanIntervalSeconds>10</scanIntervalSeconds>
             <webApp>

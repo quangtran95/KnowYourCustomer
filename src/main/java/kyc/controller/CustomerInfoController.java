@@ -17,7 +17,7 @@ public class CustomerInfoController {
    @RequestMapping(value = "/customer/searchCustomerInfo", method = RequestMethod.POST)
    public @ResponseBody
    ResponseListDto<CustomerInfoDto> getListCustomerInfo(@RequestBody SearchCustomerInfoDto searchCustomerInfoDto) {
-      System.out.print("/customer/getListCustomerInfo");
+      System.out.println("/customer/getListCustomerInfo");
       List<CustomerInfoDto> customerInfoDtoList = customerInfoService.getListCustomerInfo(searchCustomerInfoDto);
       return new ResponseListDto<CustomerInfoDto>(customerInfoDtoList, KycCode.SUCCESS);
    }
@@ -25,20 +25,15 @@ public class CustomerInfoController {
    @RequestMapping(value = "/customer/countCustomerInfo", method = RequestMethod.POST)
    public @ResponseBody
    ResponseDto<Long> countCustomerInfo(@RequestBody SearchCustomerInfoDto searchCustomerInfoDto) {
-      System.out.print("/customer/countCustomerInfo");
+      System.out.println("/customer/countCustomerInfo");
       Long customerInfoNumber = customerInfoService.countCustomerInfo(searchCustomerInfoDto);
       return new ResponseDto<Long>(customerInfoNumber, KycCode.SUCCESS);
-   }
-
-   @RequestMapping(value = "/index", method = RequestMethod.GET)
-   public ResponseDto getIndex() {
-      return new ResponseDto( KycCode.SUCCESS);
    }
 
    @RequestMapping(value = "/customer/insertCustomerInfo", method = RequestMethod.POST)
    public @ResponseBody
    ResponseDto insertCustomerInfo(@RequestBody CustomerInfoDto customerInfoDto, HttpServletResponse response) {
-      System.out.print("/customer/insertCustomerInfo");
+      System.out.println("/customer/insertCustomerInfo");
       customerInfoService.insertCustomerInfo(customerInfoDto);
       return new ResponseDto(KycCode.SUCCESS);
    }
@@ -46,7 +41,7 @@ public class CustomerInfoController {
    @RequestMapping(value = "/customer/updateCustomerInfo", method = RequestMethod.POST)
    public @ResponseBody
    ResponseDto updateCustomerInfo(@RequestBody CustomerInfoDto customerInfoDto) {
-      System.out.print("/customer/updateCustomerInfo");
+      System.out.println("/customer/updateCustomerInfo");
       customerInfoService.updateCustomerInfo(customerInfoDto);
       return new ResponseDto(KycCode.SUCCESS);
    }
@@ -54,7 +49,7 @@ public class CustomerInfoController {
    @RequestMapping(value = "/customer/deleteCustomerInfo/{customerId}", method = RequestMethod.POST)
    public @ResponseBody
    ResponseDto deleteCustomerInfo(@PathVariable Long customerId) {
-      System.out.print("/customer/deleteCustomerInfo");
+      System.out.println("/customer/deleteCustomerInfo");
       customerInfoService.deleteCustomerInfo(customerId);
       return new ResponseDto(KycCode.SUCCESS);
    }

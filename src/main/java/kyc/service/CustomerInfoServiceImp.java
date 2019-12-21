@@ -22,12 +22,14 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
    public List<CustomerInfoDto> getListCustomerInfo(SearchCustomerInfoDto searchCustomerInfoDto) {
       List<CustomerInfo> customerInfoList = customerInfoDao.getListCustomerInfo(searchCustomerInfoDto);
       List<CustomerInfoDto> customerInfoDtoList = mapper.mapCollection(customerInfoList, CustomerInfoDto.class);
+      System.out.println("Get List Customer Info Complete");
       return customerInfoDtoList;
    }
 
    @Override
    public Long countCustomerInfo(SearchCustomerInfoDto searchCustomerInfoDto) {
       Long customerInfoNumber = customerInfoDao.countCustomerInfo(searchCustomerInfoDto);
+      System.out.println("Count Customer Info Complete");
       return customerInfoNumber;
    }
 
@@ -36,6 +38,7 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
    public void insertCustomerInfo(CustomerInfoDto customerInfoDto) {
       CustomerInfo customerInfo = mapper.map(customerInfoDto, CustomerInfo.class);
       customerInfoDao.insert(customerInfo);
+      System.out.println("Insert Customer Info Complete");
    }
 
    @Override
@@ -52,6 +55,7 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
 
          customerInfoDao.update(customerInfo);
       }
+      System.out.println("Update Customer Info Complete");
    }
 
    @Override
@@ -61,5 +65,6 @@ public class CustomerInfoServiceImp extends GenericService implements CustomerIn
       if(customerInfo != null) {
          customerInfoDao.delete(customerId);
       }
+      System.out.println("Delete Customer Info Complete");
    }
 }

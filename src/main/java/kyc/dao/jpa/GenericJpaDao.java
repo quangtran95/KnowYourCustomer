@@ -16,8 +16,6 @@ import java.util.Date;
 public abstract class GenericJpaDao<T, ID extends Serializable> implements GenericDao<T, ID> {
    public static String LIKE_CHARACTER = "%";
 
-   private final Logger logger = LoggerFactory.getLogger(GenericJpaDao.class);
-
    private final Class<T> persistentClass;
 
    private EntityManager entityManager;
@@ -64,8 +62,8 @@ public abstract class GenericJpaDao<T, ID extends Serializable> implements Gener
       catch (Exception ex){
          StringWriter sw = new StringWriter();
          ex.printStackTrace(new PrintWriter(sw));
-//         logger.debug("[GenericJpaDao][Insert] Can not invoke method setUpdateTime or setCreateTime of class : "
-//               + t.getClass().getName() + ", error :" + sw.toString());
+         System.out.println("[GenericJpaDao][Insert] Can not invoke method setUpdateTime or setCreateTime of class : "
+               + t.getClass().getName() + ", error :" + sw.toString());
       }
       entityManager.persist(t);
 
@@ -95,8 +93,9 @@ public abstract class GenericJpaDao<T, ID extends Serializable> implements Gener
       catch (Exception ex){
          StringWriter sw = new StringWriter();
          ex.printStackTrace(new PrintWriter(sw));
-//         logger.debug("[GenericJpaDao][Update] Can not invoke method setUpdateTime or setCreateTime of class : "
-//               + t.getClass().getName() + ", error :" + sw.toString());
+
+         System.out.println("[GenericJpaDao][Update] Can not invoke method setUpdateTime or setCreateTime of class : "
+               + t.getClass().getName() + ", error :" + sw.toString());
       }
       entityManager.merge(t);
 
