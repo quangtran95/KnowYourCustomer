@@ -26,4 +26,18 @@ public class DateTimeUtils {
       }
 
    }
+
+   public static String formatDate(Date date, String formatString){
+      SimpleDateFormat format = new SimpleDateFormat(formatString);
+      return format.format(date);
+   }
+
+   public static String getCurrentDateTimeYYYYMMDDHHMMSS() {
+      TimeZone timeZone = TimeZone.getDefault();
+      SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+      format.setTimeZone(timeZone);
+
+      Calendar today = GregorianCalendar.getInstance(timeZone);
+      return format.format(today.getTime());
+   }
 }

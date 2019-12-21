@@ -71,8 +71,14 @@
       </div>
       </hr>
       <div>
-         <input id="kyc_search" type="text" placeholder="Search...">
-         <button type="button" id="button_search" class="btn btn-primary">Search</button>
+         <div style="float: left;">
+            <input id="kyc_search" type="text" placeholder="Search...">
+            <button type="button" id="button_search" class="btn btn-primary">Search</button>
+         </div>
+         <div style="float: right;">
+            <button type="button" id="button_export_csv" class="btn btn-primary">Export</button>
+         </div>
+         <div style="clear: both"></div>
       </div>
    </div>
    <div style="min-height: 160px;">

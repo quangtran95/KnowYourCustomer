@@ -46,4 +46,4 @@ Project: KnowYourCustomer
 -Open your browser
 -Access link: http://localhost:8080/KnowYourCustomer/
 
-End.
+NOTE: Excel file is stored in path %JETTY_HOME%\KYC

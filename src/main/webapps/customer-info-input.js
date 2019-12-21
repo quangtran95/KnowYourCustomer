@@ -115,6 +115,10 @@ bindEvent = function () {
       self.selectedCustomer = null;
       clearInput();
    });
+
+   $("#button_export_csv").click(function(){
+      exportListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+   });
 };
 
 insertCustomerInfo = function () {

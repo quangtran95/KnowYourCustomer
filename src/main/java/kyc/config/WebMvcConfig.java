@@ -29,6 +29,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
       mediaTypeList.add(MediaType.APPLICATION_JSON);
       mediaTypeList.add(MediaType.APPLICATION_XML);
       mediaTypeList.add(MediaType.APPLICATION_JSON_UTF8);
+      mediaTypeList.add(MediaType.APPLICATION_OCTET_STREAM);
 
       StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
       stringConverter.setSupportedMediaTypes(mediaTypeList);

@@ -47,6 +47,28 @@ getListCustomerInfo = function (sortPattern, sortAsc, searchContent, startIndex,
    });
 };
 
+exportListCustomerInfo = function (sortPattern, sortAsc, searchContent) {
+   var data = {
+      searchContent: searchContent,
+      sortPattern: sortPattern,
+      sortAsc: sortAsc
+   };
+
+   $.ajax({
+      type: "POST",
+      contentType: "application/json",
+      url: "http://localhost:8080/KnowYourCustomer/customer/exportCustomerInfo",
+      data: JSON.stringify(data),
+      success: function(params) {
+         handleExportListCustomerInfoComplete(params);
+      },
+      error: function () {
+         handleExportListCustomerInfoFail();
+      },
+      dataType: "json"
+   });
+};
+
 getNumberCustomerInfo = function (sortPattern, sortAsc, searchContent) {
    var data = {
       searchContent: searchContent,
@@ -104,6 +126,14 @@ handleCountCustomerInfoComplete = function (params) {
    else {
       alert("Count Customer Info fail");
    }
+};
+
+handleExportListCustomerInfoComplete = function (params) {
+   alert("Export Customer Info Complete");
+};
+
+handleExportListCustomerInfoFail = function (params) {
+   alert("Request fail");
 };
 
 handleGetListCustomerInfoFail = function (params) {
