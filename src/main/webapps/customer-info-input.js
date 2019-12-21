@@ -31,7 +31,10 @@ bindEvent = function () {
    $("#input_firstname").bind("blur", function () {
       var valid = validateFirstNameValue($("#input_firstname").val());
       if(!valid) {
-         alert('First name is required');
+         $("#input_firstname").addClass("is-invalid");
+      }
+      else {
+         $("#input_firstname").removeClass("is-invalid");
       }
    });
 
@@ -39,7 +42,10 @@ bindEvent = function () {
    $("#input_lastname").bind("blur", function () {
       var valid = validateLastNameValue($("#input_lastname").val());
       if(!valid) {
-         alert('Last name is required');
+         $("#input_lastname").addClass("is-invalid");
+      }
+      else {
+         $("#input_lastname").removeClass("is-invalid");
       }
    });
 
@@ -47,7 +53,10 @@ bindEvent = function () {
    $("#input_email").bind("blur", function () {
       var valid = validateEmailValue($("#input_email").val());
       if(!valid) {
-         alert('Email is required');
+         $("#input_email").addClass("is-invalid");
+      }
+      else {
+         $("#input_email").removeClass("is-invalid");
       }
    });
 
@@ -55,7 +64,10 @@ bindEvent = function () {
    $("#input_idnumber").bind("blur", function () {
       var valid = validateIdNumberValue($("#input_idnumber").val());
       if(!valid) {
-         alert('Id number is required');
+         $("#input_idnumber").addClass("is-invalid");
+      }
+      else {
+         $("#input_idnumber").removeClass("is-invalid");
       }
    });
 
@@ -63,7 +75,10 @@ bindEvent = function () {
    $("#input_telephone").bind("blur", function () {
       var valid = validateTelephoneNumberValue($("#input_telephone").val());
       if(!valid) {
-         alert('Telephone number is required');
+         $("#input_telephone").addClass("is-invalid");
+      }
+      else {
+         $("#input_telephone").removeClass("is-invalid");
       }
    });
 
@@ -71,7 +86,10 @@ bindEvent = function () {
    $("#input_address").bind("blur", function () {
       var valid = validateAddressValue($("#input_address").val());
       if(!valid) {
-         alert('Address is required');
+         $("#input_address").addClass("is-invalid");
+      }
+      else {
+         $("#input_address").removeClass("is-invalid");
       }
    });
 
@@ -114,29 +132,46 @@ insertCustomerInfo = function () {
    var validateTelePhoneNumber = validateTelephoneNumberValue(telephoneNumber);
    var validateAddress = validateAddressValue(address);
 
-   var summitValidateMessage = '';
    if(!validateFirstName) {
-      summitValidateMessage += 'First name, ';
+      $("#input_firstname").addClass("is-invalid");
+   }
+   else {
+      $("#input_firstname").removeClass("is-invalid");
    }
 
    if(!validateLastName) {
-      summitValidateMessage += 'Last name, ';
+      $("#input_lastname").addClass("is-invalid");
+   }
+   else {
+      $("#input_lastname").removeClass("is-invalid");
    }
 
    if(!validateEmail) {
-      summitValidateMessage += 'Email, ';
+      $("#input_email").addClass("is-invalid");
+   }
+   else {
+      $("#input_email").removeClass("is-invalid");
    }
 
    if(!validateIdNumber) {
-      summitValidateMessage += 'Id number, ';
+      $("#input_idnumber").addClass("is-invalid");
+   }
+   else {
+      $("#input_idnumber").removeClass("is-invalid");
    }
 
    if(!validateTelePhoneNumber) {
-      summitValidateMessage += 'Telephone number, ';
+      $("#input_telephone").addClass("is-invalid");
+   }
+   else {
+      $("#input_telephone").removeClass("is-invalid");
    }
 
    if(!validateAddress) {
-      summitValidateMessage += 'Address, ';
+      $("#input_address").addClass("is-invalid");
+   }
+   else {
+      $("#input_address").removeClass("is-invalid");
    }
 
    if(validateFirstName && validateLastName && validateEmail && validateIdNumber && validateTelePhoneNumber && validateAddress) {
@@ -162,7 +197,7 @@ insertCustomerInfo = function () {
       });
    }
    else {
-      alert(summitValidateMessage + ' is required');
+      alert('Inputs are in-valid');
    }
 };
 
