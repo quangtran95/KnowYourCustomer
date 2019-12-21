@@ -1,10 +1,12 @@
 table#kyc_customer_info_table tr td {
    border: 1px lightgray solid;
    border-collapse: collapse;
+   width: 170px;
+   padding-left: 15px;
 }
 
 .kyc-customer-info-header {
-   width: 150px;
+   width: 170px;
    cursor: pointer;
    font-weight: bold;
    text-align: center;

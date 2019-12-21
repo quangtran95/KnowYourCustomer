@@ -56,6 +56,9 @@ public class CustomerInfoJpaDao extends GenericJpaDao<CustomerInfo, Long> implem
             case "Address":
                sqlBuilder.append("ORDER BY C.ADDRESS ");
                break;
+            case "Date":
+               sqlBuilder.append("ORDER BY C.UPDATE_TIME ");
+               break;
             default:
                sqlBuilder.append("ORDER BY C.ID ");
          }
@@ -119,6 +122,9 @@ public class CustomerInfoJpaDao extends GenericJpaDao<CustomerInfo, Long> implem
                break;
             case "Address":
                sqlBuilder.append("ORDER BY C.ADDRESS ");
+               break;
+            case "Date":
+               sqlBuilder.append("ORDER BY C.UPDATE_TIME ");
                break;
             default:
                sqlBuilder.append("ORDER BY C.ID ");

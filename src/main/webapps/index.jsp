@@ -78,12 +78,13 @@
    <div style="min-height: 160px;">
       <table id="kyc_customer_info_table_header">
          <tr>
-            <th class="kyc-customer-info-header fa fa-sort-alpha-asc" id="kyc_first_name_header"> First Name</th>
+            <th class="kyc-customer-info-header fa fa-sort-asc" id="kyc_first_name_header"> First Name</th>
             <th class="kyc-customer-info-header fa " id="kyc_last_name_header"> Last Name</th>
             <th class="kyc-customer-info-header fa " id="kyc_email_header"> Email</th>
             <th class="kyc-customer-info-header fa " id="kyc_id_number_header"> Id Number</th>
             <th class="kyc-customer-info-header fa " id="kyc_telephone_header"> Telephone</th>
             <th class="kyc-customer-info-header fa " id="kyc_address_header"> Address</th>
+            <th class="kyc-customer-info-header fa " id="kyc_date_header"> Date</th>
          </tr>
       </table>
       <table id="kyc_customer_info_table" style="max-height: 130px;" class="table-striped">

@@ -19,6 +19,9 @@ this.loadData = 0;
 this.getListCustomerInfoReturnData;
 this.countCustomerInfoReturnData;
 
+//Month value
+this.MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 //Load data
 getListCustomerInfo = function (sortPattern, sortAsc, searchContent, startIndex, limitNumber) {
    var data = {
@@ -122,13 +125,23 @@ renderCustomerTable = function (listCustomerInfo) {
    var tableHtml = '';
 
    for(index in listCustomerInfo) {
+      var dateTime = new Date(listCustomerInfo[index].updateTime);
+      var date = dateTime.getDate();
+      var month = dateTime.getMonth();
+      var hour = dateTime.getHours();
+      var minute = dateTime.getMinutes();
+      var year = dateTime.getFullYear();
+      dateTime.getT
+      var timeStr = date + ' ' + this.MONTH[month] + ', ' + hour + ':' + minute + ' (' + year + ')';
+
       var row =   '<tr cutomer-id="' + listCustomerInfo[index].id + '" style="vertical-align: top; height: 26px;">' +
-            '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].firstName + '</td>' +
-            '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].lastName + '</td>' +
-            '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].email + '</td>' +
-            '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].idNumber + '</td>' +
-            '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].telephoneNumber + '</td>' +
-            '<td style="width: 150px; padding-left: 15px;">' + listCustomerInfo[index].address + '</td>' +
+            '<td>' + listCustomerInfo[index].firstName + '</td>' +
+            '<td>' + listCustomerInfo[index].lastName + '</td>' +
+            '<td>' + listCustomerInfo[index].email + '</td>' +
+            '<td>' + listCustomerInfo[index].idNumber + '</td>' +
+            '<td>' + listCustomerInfo[index].telephoneNumber + '</td>' +
+            '<td>' + listCustomerInfo[index].address + '</td>' +
+            '<td>' + timeStr + '</td>' +
             '</tr>';
       tableHtml += row;
    }
@@ -242,15 +255,30 @@ bindEventCusomerTable = function () {
       getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
       getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
    });
+
+   $( "#kyc_date_header").unbind( "click" );
+   $("#kyc_date_header").bind("click", function () {
+      if(self.sortPattern === "Date"){
+         self.sortAsc = !self.sortAsc;
+      }
+      else {
+         self.sortPattern = "Date";
+         self.sortAsc = true;
+      }
+      updateSortUi("kyc_customer_info_table_header", "kyc_date_header", self.sortAsc);
+      var startIndex = self.currentPage * self.PAGE_ITEM_NUMBER;
+      getListCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent, startIndex, self.PAGE_ITEM_NUMBER);
+      getNumberCustomerInfo(self.sortPattern, self.sortAsc, self.searchContent);
+   });
 };
 
 updateSortUi = function (tableId, headerId, sortAsc) {
-   $("#" + tableId + " tr th").removeClass("fa-sort-alpha-asc fa-sort-alpha-desc");
+   $("#" + tableId + " tr th").removeClass("fa-sort-desc fa-sort-asc");
    if(sortAsc === true) {
-      $("#" + headerId).addClass("fa-sort-alpha-asc");
+      $("#" + headerId).addClass("fa-sort-asc");
    }
    else {
-      $("#" + headerId).addClass("fa-sort-alpha-desc");
+      $("#" + headerId).addClass("fa-sort-desc");
    }
 };
 

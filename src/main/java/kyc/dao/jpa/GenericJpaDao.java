@@ -56,8 +56,8 @@ public abstract class GenericJpaDao<T, ID extends Serializable> implements Gener
          cArg[0] = Date.class;
          Method funcUpdateTime = persistentClass.getMethod("setUpdateTime",cArg);
          Method funcCreateTime = persistentClass.getMethod("setCreateTime",cArg);
-         funcCreateTime.invoke(t , DateTimeUtils.getNowDate());
-         funcUpdateTime.invoke(t,new Object[]{null});
+         funcCreateTime.invoke(t, DateTimeUtils.getNowDate());
+         funcUpdateTime.invoke(t, DateTimeUtils.getNowDate());
       }
       catch (Exception ex){
          StringWriter sw = new StringWriter();
@@ -88,7 +88,7 @@ public abstract class GenericJpaDao<T, ID extends Serializable> implements Gener
                funcSetCreateTime.invoke(t, funcGetCreateTime.invoke(tInDB));
             }
          }
-         funcSetUpdateTime.invoke(t, new Object[]{null});
+         funcSetUpdateTime.invoke(t, DateTimeUtils.getNowDate());
       }
       catch (Exception ex){
          StringWriter sw = new StringWriter();
