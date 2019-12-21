@@ -199,12 +199,17 @@
          <version>9.2.10.v20150310</version>
 
          <configuration>
+            <httpConnector>
+               <port>8443</port>
+            </httpConnector>
             <scanIntervalSeconds>10</scanIntervalSeconds>
             <webApp>
                <contextPath>/KnowYourCustomer</contextPath>
             </webApp>
+            <webAppSourceDirectory>src/main/webapps</webAppSourceDirectory>
             <stopKey/>
             <stopPort/>
+            <war>target/KnowYourCustomer</war>
          </configuration>
 
       </plugin>
