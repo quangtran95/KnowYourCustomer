@@ -1,8 +1,8 @@
 Project: KnowYourCustomer
 1. Required Enviroment
 	-Java 1.8 181 64 bit
-	-Maven 3.2.1
-	-MySql 5.7.22
+	-Maven 3.2.1 (can use a attach file)
+	-MySql 5.7.22 (can use a attach file)
 
 2. Prepare DataBase
 -Create Database with name: atg
